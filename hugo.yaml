@@ -39,7 +39,7 @@ params:
   # See docs/contributing/docs-site.
   version: dev
   version_menu: Versions
-  version_menu_pagelinks: true
+  version_menu_pagelinks: false
   archived_version: false
   url_latest_version: /filagora-docs/
   versions:
