@@ -4,16 +4,11 @@ weight: 50
 description: Working on the packages and on this documentation site.
 ---
 
-## Working on a package
+**Start with [Local development]({{< relref "local-development" >}})**: checking a package out, running its tests, and developing it inside the demo app.
+
+## Expectations
 
 Each package's `CONTRIBUTING.md` is authoritative. The shared expectations:
-
-```bash
-composer install
-composer test      # Pest, against a real MariaDB database named `testing`
-composer lint      # Pint
-composer analyse   # Larastan
-```
 
 - `master` is protected: open a pull request; it is squash-merged once CI is green.
 - Behaviour changes ship with tests; bug fixes ship with a regression test that fails before the fix.
