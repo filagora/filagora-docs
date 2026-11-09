@@ -6,14 +6,43 @@ description: How the site is built, how to preview it, and how versions are publ
 
 The site is [Hugo](https://gohugo.io) with the [Docsy](https://www.docsy.dev) theme, pulled in as a Hugo module.
 
+## Prerequisites
+
+| Tool | Version | Why |
+| --- | --- | --- |
+| Hugo **extended** | 0.160.1 or newer (CI uses 0.169.0) | Builds the site. The extended edition is required to compile the theme's Sass |
+| Go | 1.24 or newer | Hugo uses it to download the Docsy theme as a module |
+| Node.js and npm | 20 | Installs Bootstrap, Font Awesome and Dart Sass (`npm ci`) |
+| Git | any | Hugo reads page history for "last modified" dates |
+
+### Install Hugo
+
+Install the **extended** edition and check it with `hugo version`: the output must say `+extended`, and the version must be at least 0.160.1. Distribution packages are often far older than this (Debian's `apt install hugo` is a 0.1xx release from years ago), so do not use `apt` or an old `snap`.
+
+- **macOS:** `brew install hugo` (the Homebrew build is extended).
+- **Windows:** `winget install Hugo.Hugo.Extended`, or `choco install hugo-extended`.
+- **Linux:** download `hugo_extended_<version>_linux-amd64.tar.gz` from the [Hugo releases page](https://github.com/gohugoio/hugo/releases), extract the `hugo` binary and put it on your `PATH`, for example:
+
+  ```bash
+  tar xzf hugo_extended_0.169.0_linux-amd64.tar.gz hugo
+  mv hugo ~/.local/bin/        # make sure ~/.local/bin is on your PATH
+  hugo version                 # ... +extended
+  ```
+
+Go: `go version`, and install from [go.dev/dl](https://go.dev/dl/) if it is missing or older than 1.24.
+
 ## Preview locally
 
-You need Hugo **extended** 0.160.1 or newer, Go and Node 20.
-
 ```bash
-npm ci
-npm run serve
+npm ci               # once, and after package.json changes
+npm run serve        # then open http://localhost:1313/filagora-docs/
 ```
+
+### Why `npm run serve` and not `hugo server`?
+
+Docsy compiles its CSS with **Dart Sass**, and Hugo only finds it if a `sass` executable is on your `PATH`. `npm ci` installs one (the `sass-embedded` package), but inside `node_modules`, where Hugo does not look. `npm run serve` runs `scripts/hugo.sh`, which locates that binary, adds it to `PATH` and then runs `hugo server`. Nothing else is different, and the same wrapper builds the site in CI.
+
+If you already have Dart Sass installed system-wide (`brew install sass/sass/sass`, or a release from the [Dart Sass repository](https://github.com/sass/dart-sass/releases) on your `PATH`), plain `hugo server` works and you can ignore the wrapper. A failure such as `TOCSS-DART: failed to transform "/scss/main.scss"` means Hugo cannot find Dart Sass: use `npm run serve`.
 
 ## What is written by hand and what is generated
 

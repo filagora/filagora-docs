@@ -3,9 +3,13 @@
 Developer documentation for the [Filagora](https://github.com/filagora) packages, built with
 [Hugo](https://gohugo.io) and the [Docsy](https://www.docsy.dev) theme.
 
+Needs Hugo **extended** 0.160.1+, Go 1.24+ and Node 20; see
+[This documentation site](content/en/docs/contributing/docs-site.md) for installing them and
+why `npm run serve` is used instead of `hugo server`.
+
 ```bash
 npm ci
-npm run serve         # hugo server; needs Hugo extended >= 0.160.1, Go and Node 20
+npm run serve         # runs `hugo server` with Dart Sass on the PATH
 ```
 
 Concept and contributing pages are hand-written under `content/en/docs/`. The package and
