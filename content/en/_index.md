@@ -16,13 +16,13 @@ Every package is a Filament plugin with its own repository, version, config file
 {{% /blocks/lead %}}
 
 {{% blocks/section color="white" type="row" %}}
-{{% blocks/feature icon="fa-diagram-project" title="Architecture" url="/docs/concepts/architecture/" %}}
+{{% blocks/feature icon="fa-diagram-project" title="Architecture" url="docs/concepts/architecture/" %}}
 How the packages depend on each other, and the conventions they all share.
 {{% /blocks/feature %}}
-{{% blocks/feature icon="fa-box-open" title="Packages" url="/docs/packages/" %}}
+{{% blocks/feature icon="fa-box-open" title="Packages" url="docs/packages/" %}}
 One reference page per package: install, configuration, commands and extension points.
 {{% /blocks/feature %}}
-{{% blocks/feature icon="fa-code-branch" title="Contributing" url="/docs/contributing/" %}}
+{{% blocks/feature icon="fa-code-branch" title="Contributing" url="docs/contributing/" %}}
 Testing, CI, releases and how this documentation site is built.
 {{% /blocks/feature %}}
 {{% /blocks/section %}}
