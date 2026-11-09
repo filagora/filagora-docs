@@ -2,3 +2,10 @@
 /resources/_gen/
 /node_modules/
 .hugo_build.lock
+
+# Generated from each package's README by scripts/sync-packages.sh on every build
+# (committed only on release-* branches, which add content/en/docs/.frozen).
+/content/en/docs/packages/*.md
+/content/en/docs/tooling/*.md
+!/content/en/docs/packages/_index.md
+!/content/en/docs/tooling/_index.md

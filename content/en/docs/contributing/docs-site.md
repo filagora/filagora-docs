@@ -18,13 +18,9 @@ npm run serve
 ## What is written by hand and what is generated
 
 - `content/en/docs/concepts/`, `getting-started/` and `contributing/` are hand-written. Edit them directly.
-- `content/en/docs/packages/` and `tooling/` are **generated from each package's README**. Do not edit them: change the README in the package, then run
+- `content/en/docs/packages/` and `tooling/` are **generated from each package's README** and are not committed on `master`. CI runs `scripts/sync-packages.sh` before every build, fetching the README at each package's latest release tag, so a package's docs update when it is released. A daily scheduled build also picks up changes. Do not edit these pages: change the README in the package.
 
-  ```bash
-  bash scripts/sync-packages.sh      # PACKAGES_DIR defaults to this repo's siblings
-  ```
-
-  and commit the result. This keeps the reference from drifting from the code. Add a package by adding a line to the manifest in the script (public repositories only).
+  To preview locally, run `bash scripts/sync-packages.sh` (reads the sibling checkouts) or `SYNC_SOURCE=github bash scripts/sync-packages.sh`. Add a package by adding a line to the manifest in the script (public repositories only).
 
 ## Versions
 
@@ -35,4 +31,6 @@ Docsy's version menu links to separately built copies of the site. CI does this:
 | `master` | `/` (development) | none |
 | branch `release-<major>.<minor>` | `/v<major>.<minor>/` | "archived snapshot" |
 
-To cut a docs version when a Filagora release set ships: create `release-0.3` from `master`, add an entry to `params.versions` in `hugo.yaml` on `master`, and push. Later changes to a release's docs go on its branch. The build passes `HUGO_PARAMS_VERSION` and `HUGO_PARAMS_ARCHIVED_VERSION` for each branch, so no per-branch config edits are needed.
+To cut a docs version when a Filagora release set ships: create `release-0.3` from `master`, add an entry to `params.versions` in `hugo.yaml` on `master`, and push. Later changes to a release's docs go on its branch.
+
+A release branch is a frozen snapshot, so on that branch run the sync once, commit the generated pages, and add an empty `content/en/docs/.frozen` file (and remove the generated-pages entries from `.gitignore`). The sync is then a no-op there and the old version does not change when a README does. The build passes `HUGO_PARAMS_VERSION` and `HUGO_PARAMS_ARCHIVED_VERSION` for each branch, so no per-branch config edits are needed.
