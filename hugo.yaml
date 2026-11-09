@@ -1,0 +1,70 @@
+baseURL: /
+title: Filagora Developer Docs
+defaultContentLanguage: en
+languages:
+  en:
+    contentDir: content/en
+    label: English
+    locale: en-US
+    weight: 1
+enableRobotsTXT: true
+enableGitInfo: true
+disableKinds: [taxonomy]
+
+module:
+  hugoVersion:
+    extended: true
+    min: 0.160.1
+  imports:
+    - path: github.com/docsy/docsy/theme
+
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+  highlight:
+    noClasses: false
+    style: tango
+
+params:
+  description: "Developer documentation for the Filagora packages, a modular forum, CMS, memberships and community toolkit for Laravel and Filament."
+  copyright: The Filagora contributors
+  github_repo: https://github.com/filagora/filagora-docs
+  github_project_repo: https://github.com/filagora
+  github_branch: master
+
+  # Versioning. CI builds `master` at the site root (the development docs) and
+  # every `release-*` branch under /<version>/, overriding `version` and
+  # `archived_version` per build via HUGO_PARAMS_* environment variables.
+  # See docs/contributing/docs-site.
+  version: dev
+  version_menu: Versions
+  version_menu_pagelinks: true
+  archived_version: false
+  url_latest_version: /filagora-docs/
+  versions:
+    - version: dev
+      name: Development
+      url: /filagora-docs/
+    # - version: "0.2"
+    #   name: "0.2"
+    #   url: /filagora-docs/v0.2/
+
+  ui:
+    sidebar_menu_compact: false
+    sidebar_menu_foldable: true
+    breadcrumb_disable: false
+    sidebar_search_disable: false
+    navbar_logo: false
+    footer_about_enable: false
+    showLightDarkModeMenu: true
+  offlineSearch: true
+  offlineSearchSummaryLength: 160
+  offlineSearchMaxResults: 15
+
+  links:
+    developer:
+      - name: GitHub
+        url: https://github.com/filagora
+        icon: fab fa-github
+        desc: "The Filagora organisation, one repository per package"
