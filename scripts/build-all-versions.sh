@@ -12,6 +12,7 @@ build() { # ref destdir baseurl version archived
   git -C "$root" worktree add --force "$work/$1" "origin/$1" >/dev/null 2>&1 \
     || git -C "$root" worktree add --force "$work/$1" "$1" >/dev/null
   (cd "$work/$1" && npm ci --no-audit --no-fund >/dev/null \
+    && SYNC_SOURCE=github bash scripts/sync-packages.sh >/dev/null \
     && HUGO_PARAMS_VERSION="$4" HUGO_PARAMS_ARCHIVED_VERSION="$5" \
        bash scripts/hugo.sh --gc --minify --environment production \
          --baseURL "$3" --destination "$2")

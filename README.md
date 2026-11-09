@@ -9,10 +9,11 @@ npm run serve         # hugo server; needs Hugo extended >= 0.160.1, Go and Node
 ```
 
 Concept and contributing pages are hand-written under `content/en/docs/`. The package and
-tooling pages are generated from each package's README:
+tooling pages are generated from each package's README on every build (not committed on
+`master`). To preview them locally:
 
 ```bash
-bash scripts/sync-packages.sh
+bash scripts/sync-packages.sh        # sibling checkouts; SYNC_SOURCE=github fetches releases
 ```
 
 See [This documentation site](content/en/docs/contributing/docs-site.md) for versioning and

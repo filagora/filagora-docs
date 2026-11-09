@@ -1,17 +1,31 @@
 #!/usr/bin/env bash
-# Regenerates the per-package pages from each package's README.md so the docs
-# cannot drift from the packages. Run from anywhere; PACKAGES_DIR defaults to
-# the directory holding this repository's siblings.
+# Generates the per-package pages from each package's README.md so the docs
+# cannot drift from the packages. The generated pages are not committed on
+# `master`: CI runs this before every build.
+#
+#   SYNC_SOURCE=github  (CI) the README at each package's latest release tag
+#                       (its default branch if it has no release), via `gh`.
+#   SYNC_SOURCE=local   (default) the sibling checkouts in PACKAGES_DIR
+#                       (defaults to the directory holding this repository).
 #
 #   bash scripts/sync-packages.sh
-#   PACKAGES_DIR=~/src/filagora bash scripts/sync-packages.sh
+#   SYNC_SOURCE=github bash scripts/sync-packages.sh
+#
+# A release branch freezes its docs: it commits the generated pages and adds
+# content/en/docs/.frozen, which makes this script a no-op there.
 #
 # Only public packages are listed. Never add a private repository here.
 set -euo pipefail
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 packages_dir="${PACKAGES_DIR:-$(cd "$root/.." && pwd)}"
+source_mode="${SYNC_SOURCE:-local}"
 org="https://github.com/filagora"
+
+if [ -e "$root/content/en/docs/.frozen" ]; then
+  echo "content/en/docs/.frozen exists: keeping the committed package pages"
+  exit 0
+fi
 
 # repo|section|weight|title
 manifest='
@@ -43,17 +57,27 @@ done
 
 while IFS='|' read -r repo section weight title; do
   [ -z "$repo" ] && continue
-  src="$packages_dir/$repo/README.md"
-  if [ ! -f "$src" ]; then
-    echo "skip $repo (no README at $src)" >&2
-    continue
-  fi
-
+  readme="$(mktemp)"
   description=""
-  if [ -f "$packages_dir/$repo/composer.json" ]; then
-    description="$(php -r '$j=json_decode(file_get_contents($argv[1]),true); echo $j["description"] ?? "";' "$packages_dir/$repo/composer.json" 2>/dev/null || true)"
+  version=""
+  if [ "$source_mode" = github ]; then
+    version="$(gh api "repos/filagora/$repo/releases/latest" --jq .tag_name 2>/dev/null)" || version=""
+    ref="${version:-HEAD}"
+    if ! gh api "repos/filagora/$repo/contents/README.md?ref=$ref" -H 'Accept: application/vnd.github.raw' > "$readme" 2>/dev/null; then
+      echo "skip $repo (no README at $ref)" >&2
+      continue
+    fi
+    description="$(gh api "repos/filagora/$repo/contents/composer.json?ref=$ref" -H 'Accept: application/vnd.github.raw' 2>/dev/null | jq -r '.description // ""' 2>/dev/null || true)"
+  else
+    src="$packages_dir/$repo/README.md"
+    if [ ! -f "$src" ]; then
+      echo "skip $repo (no README at $src)" >&2
+      continue
+    fi
+    cp "$src" "$readme"
+    [ -f "$packages_dir/$repo/composer.json" ] && description="$(jq -r '.description // ""' "$packages_dir/$repo/composer.json" 2>/dev/null || true)"
+    version="$(git -C "$packages_dir/$repo" describe --tags --abbrev=0 2>/dev/null || true)"
   fi
-  version="$(git -C "$packages_dir/$repo" describe --tags --abbrev=0 2>/dev/null || true)"
   slug="${repo#filagora-}"
   out="$root/content/en/docs/$section/$slug.md"
 
@@ -70,13 +94,14 @@ while IFS='|' read -r repo section weight title; do
     echo "---"
     echo
     echo "{{% pageinfo %}}"
-    echo "This page is generated from the package's [README]($org/$repo#readme)${version:+ at \`$version\`}. To change it, edit the README in [\`$repo\`]($org/$repo) and re-run \`scripts/sync-packages.sh\`."
+    echo "This page is generated from the package's [README]($org/$repo#readme)${version:+ at \`$version\`}. To change it, edit the README in [\`$repo\`]($org/$repo) and the next build picks it up."
     echo "{{% /pageinfo %}}"
     echo
     # Drop the README's H1 (the page title replaces it) and point relative
     # links at the repository, since they do not resolve on this site.
-    awk 'BEGIN{h=0} !h && /^# /{h=1; next} {print}' "$src" \
+    awk 'BEGIN{h=0} !h && /^# /{h=1; next} {print}' "$readme" \
       | perl -pe 's{\]\((?!https?://|#|mailto:|/)([^)\s]+)\)}{](https://github.com/filagora/'"$repo"'/blob/HEAD/$1)}g'
   } > "$out"
+  rm -f "$readme"
   echo "wrote ${out#$root/}"
 done <<< "$manifest"
