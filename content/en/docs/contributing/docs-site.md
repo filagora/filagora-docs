@@ -6,7 +6,22 @@ description: How the site is built, how to preview it, and how versions are publ
 
 The site is [Hugo](https://gohugo.io) with the [Docsy](https://www.docsy.dev) theme, pulled in as a Hugo module.
 
-## Prerequisites
+## Preview with DDEV (no local Hugo needed)
+
+The repository ships a `.ddev/` project with Hugo extended, Go and Node pre-installed at the versions CI uses, so the only prerequisite is [DDEV](https://ddev.readthedocs.io).
+
+```bash
+ddev start
+ddev serve           # then open https://filagora-docs.ddev.site:1313/
+```
+
+`ddev serve` installs the npm packages on first use, generates the package pages from the packages' latest released READMEs (fetched from GitHub; set `SYNC_SOURCE=local` to read sibling checkouts instead, which are not mounted in the container) and starts `hugo server` with live reload. Stop it with Ctrl+C and `ddev stop`.
+
+Use either DDEV or your own Hugo for a given checkout, not both: `npm ci` installs a Dart Sass binary for the platform it runs on, so switching between a macOS host and the Linux container means re-running `rm -rf node_modules && npm ci`.
+
+## Or install Hugo yourself
+
+### Prerequisites
 
 | Tool | Version | Why |
 | --- | --- | --- |

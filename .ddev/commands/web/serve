@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+## Description: Serve the docs with Hugo at https://filagora-docs.ddev.site:1313
+## Usage: serve [hugo server flags]
+## Example: ddev serve
+## Example: SYNC_SOURCE=local ddev serve   (reads sibling checkouts; not mounted in DDEV)
+
+set -euo pipefail
+cd "$DDEV_COMPOSER_ROOT"
+[ -d node_modules/sass-embedded ] || npm ci
+SYNC_SOURCE="${SYNC_SOURCE:-github}" bash scripts/sync-packages.sh
+exec bash scripts/hugo.sh server --bind 0.0.0.0 --port 1313 --appendPort=false \
+  --baseURL "https://${DDEV_HOSTNAME}:1313/" --disableFastRender "$@"
