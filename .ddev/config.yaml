@@ -1,0 +1,13 @@
+name: filagora-docs
+type: generic
+docroot: public
+webserver_type: nginx-fpm
+nodejs_version: "20"
+omit_containers: [db]
+use_dns_when_possible: true
+# Hugo's dev server, reached at https://filagora-docs.ddev.site:1313 (see `ddev serve`).
+web_extra_exposed_ports:
+  - name: hugo
+    container_port: 1313
+    http_port: 1314
+    https_port: 1313

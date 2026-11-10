@@ -3,7 +3,14 @@
 Developer documentation for the [Filagora](https://github.com/filagora) packages, built with
 [Hugo](https://gohugo.io) and the [Docsy](https://www.docsy.dev) theme.
 
-Needs Hugo **extended** 0.160.1+, Go 1.24+ and Node 20; see
+With [DDEV](https://ddev.readthedocs.io), nothing else is needed:
+
+```bash
+ddev start
+ddev serve           # https://filagora-docs.ddev.site:1313/
+```
+
+Or install the tools yourself. Needs Hugo **extended** 0.160.1+, Go 1.24+ and Node 20; see
 [This documentation site](content/en/docs/contributing/docs-site.md) for installing them and
 why `npm run serve` is used instead of `hugo server`.
 

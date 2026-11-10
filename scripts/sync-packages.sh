@@ -3,8 +3,9 @@
 # cannot drift from the packages. The generated pages are not committed on
 # `master`: CI runs this before every build.
 #
-#   SYNC_SOURCE=github  (CI) the README at each package's latest release tag
-#                       (its default branch if it has no release), via `gh`.
+#   SYNC_SOURCE=github  (CI, `ddev serve`) the README at each package's latest
+#                       release tag (its default branch if it has no release),
+#                       over plain HTTPS: needs curl and jq only.
 #   SYNC_SOURCE=local   (default) the sibling checkouts in PACKAGES_DIR
 #                       (defaults to the directory holding this repository).
 #
@@ -61,13 +62,17 @@ while IFS='|' read -r repo section weight title; do
   description=""
   version=""
   if [ "$source_mode" = github ]; then
-    version="$(gh api "repos/filagora/$repo/releases/latest" --jq .tag_name 2>/dev/null)" || version=""
+    # Plain HTTPS: no `gh` and no API rate limit. `releases/latest` redirects to
+    # the tag page, or to `releases` when the repository has no release.
+    final="$(curl -fsSL -o /dev/null -w '%{url_effective}' "$org/$repo/releases/latest" 2>/dev/null)" || final=""
+    case "$final" in */releases/tag/*) version="${final##*/releases/tag/}" ;; *) version="" ;; esac
     ref="${version:-HEAD}"
-    if ! gh api "repos/filagora/$repo/contents/README.md?ref=$ref" -H 'Accept: application/vnd.github.raw' > "$readme" 2>/dev/null; then
+    raw="https://raw.githubusercontent.com/filagora/$repo/$ref"
+    if ! curl -fsSL "$raw/README.md" -o "$readme" 2>/dev/null; then
       echo "skip $repo (no README at $ref)" >&2
       continue
     fi
-    description="$(gh api "repos/filagora/$repo/contents/composer.json?ref=$ref" -H 'Accept: application/vnd.github.raw' 2>/dev/null | jq -r '.description // ""' 2>/dev/null || true)"
+    description="$(curl -fsSL "$raw/composer.json" 2>/dev/null | jq -r '.description // ""' 2>/dev/null || true)"
   else
     src="$packages_dir/$repo/README.md"
     if [ ! -f "$src" ]; then
