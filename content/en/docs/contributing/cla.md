@@ -1,0 +1,41 @@
+---
+title: Contributor License Agreement
+weight: 20
+description: The terms every Filagora contribution is submitted under.
+---
+
+This agreement is between you and the maintainers of the Filagora project (Filagora), covering
+code and any other materials you submit to Filagora repositories ("Contribution").
+
+Thank you for your interest in contributing to Filagora. This agreement clarifies the terms under
+which Contributions are submitted. It is for your protection as well as ours; it does not change
+your rights to use your own Contributions for any other purpose.
+
+There is nothing to sign. Submitting a pull request means you accept these terms.
+
+You and Filagora agree:
+
+1. **License.** You license your Contribution under the MIT License, the same license that covers
+   the Filagora project (see the `LICENSE` file in the repository you are contributing to). No
+   other license is granted or accepted: Contributions are not accepted under any proprietary,
+   copyleft or other terms. Except for this license, you retain all right, title, and interest in
+   and to your Contribution.
+
+2. **You are able to grant this license.** You represent that you are legally entitled to license
+   the Contribution under the MIT License. If your employer has rights to intellectual property
+   that you create, you represent that you have received permission to make the Contribution on
+   behalf of that employer, or that your employer has waived such rights.
+
+3. **The Contribution is your original work.** You represent that the Contribution is your
+   original work of authorship, or that any third-party material it includes is clearly
+   identified and available under MIT-compatible terms. You also represent that you are not
+   legally obligated, by agreement or otherwise, in any way that conflicts with this license.
+
+4. **Filagora decides what is included.** Inclusion of a Contribution in any repository or
+   release is entirely at the discretion of the maintainers, and this agreement does not
+   guarantee that a Contribution will be accepted.
+
+5. **No warranties.** Except as explicitly described in this agreement, the Contribution is
+   provided "AS IS", WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED,
+   INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OR CONDITIONS OF TITLE, NON-INFRINGEMENT,
+   MERCHANTABILITY, OR FITNESS FOR A PARTICULAR PURPOSE.
