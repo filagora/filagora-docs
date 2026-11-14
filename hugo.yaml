@@ -28,7 +28,7 @@ markup:
 
 params:
   description: "Developer documentation for the Filagora packages, a modular forum, CMS, memberships and community toolkit for Laravel and Filament."
-  copyright: The Filagora contributors
+  copyright: Ian Wilson
   github_repo: https://github.com/filagora/filagora-docs
   github_project_repo: https://github.com/filagora
   github_branch: master
