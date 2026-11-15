@@ -52,7 +52,7 @@ filagora-package-skeleton|tooling|20|Package skeleton
 filagora-shared|tooling|30|Shared workflows
 '
 
-for section in packages tooling; do
+for section in packages tooling changelog; do
   find "$root/content/en/docs/$section" -name '*.md' ! -name '_index.md' -delete
 done
 
@@ -85,6 +85,42 @@ while IFS='|' read -r repo section weight title; do
   fi
   slug="${repo#filagora-}"
   out="$root/content/en/docs/$section/$slug.md"
+
+  # The package's CHANGELOG.md, at the same ref as the README, becomes a page
+  # under Changelog. Packages without one (the demo app) get none.
+  changelog="$(mktemp)"
+  has_changelog=0
+  if [ "$source_mode" = github ]; then
+    curl -fsSL "$raw/CHANGELOG.md" -o "$changelog" 2>/dev/null && has_changelog=1
+  elif [ -f "$packages_dir/$repo/CHANGELOG.md" ]; then
+    cp "$packages_dir/$repo/CHANGELOG.md" "$changelog"
+    has_changelog=1
+  fi
+  if [ "$has_changelog" = 1 ]; then
+    changelog_weight=$weight
+    [ "$section" = tooling ] && changelog_weight=$((weight + 200))
+    {
+      echo "---"
+      echo "title: \"$title\""
+      echo "linkTitle: \"$title\""
+      # Tooling sorts after the packages in this section.
+      echo "weight: $changelog_weight"
+      echo "description: >-"
+      echo "  Release notes for $repo."
+      echo "params:"
+      echo "  repo: $repo"
+      [ -n "$version" ] && echo "  package_version: $version"
+      echo "---"
+      echo
+      echo "{{% pageinfo %}}"
+      echo "This page is generated from the package's [CHANGELOG]($org/$repo/blob/HEAD/CHANGELOG.md)${version:+ at \`$version\`}. To change it, edit the changelog in [\`$repo\`]($org/$repo). See also the [$title package page]({{< relref \"/docs/$section/$slug\" >}})."
+      echo "{{% /pageinfo %}}"
+      echo
+      awk 'BEGIN{h=0} !h && /^# /{h=1; next} {print}' "$changelog"
+    } > "$root/content/en/docs/changelog/$slug.md"
+    echo "wrote content/en/docs/changelog/$slug.md"
+  fi
+  rm -f "$changelog"
 
   {
     echo "---"
