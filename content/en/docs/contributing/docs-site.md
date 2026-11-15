@@ -62,7 +62,7 @@ If you already have Dart Sass installed system-wide (`brew install sass/sass/sas
 ## What is written by hand and what is generated
 
 - `content/en/docs/concepts/`, `getting-started/` and `contributing/` are hand-written. Edit them directly.
-- `content/en/docs/packages/` and `tooling/` are **generated from each package's README** and are not committed on `master`. CI runs `scripts/sync-packages.sh` before every build, fetching the README at each package's latest release tag, so a package's docs update when it is released. A daily scheduled build also picks up changes. Do not edit these pages: change the README in the package.
+- `content/en/docs/packages/`, `tooling/` and `changelog/` are **generated from each package's README (and `CHANGELOG.md`)** and are not committed on `master`. CI runs `scripts/sync-packages.sh` before every build, fetching the README at each package's latest release tag, so a package's docs update when it is released. A daily scheduled build also picks up changes. Do not edit these pages: change the README in the package.
 
   To preview locally, run `bash scripts/sync-packages.sh` (reads the sibling checkouts) or `SYNC_SOURCE=github bash scripts/sync-packages.sh`. Add a package by adding a line to the manifest in the script (public repositories only).
 
